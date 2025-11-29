@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from passlib.context import CryptContext
-from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
 import sqlite3

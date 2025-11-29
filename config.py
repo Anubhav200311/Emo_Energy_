@@ -3,7 +3,7 @@ from typing import Optional
 
 class Settings(BaseSettings):
     # Database
-    DATABASE_URL: str = "postgresql://user:password@localhost:5432/contentdb"
+    DATABASE_URL: str = "postgresql://postgres:mysecretpassword@localhost:5432/postgres"
     
     # JWT
     SECRET_KEY: str
@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # OpenAI
-    OPENAI_API_KEY: str
+    # OPENAI_API_KEY: str
     
     # Redis (Optional)
     REDIS_URL: Optional[str] = None

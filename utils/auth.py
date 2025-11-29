@@ -2,7 +2,7 @@ from passlib.context import CryptContext
 import jwt
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-from app.config import settings
+from config import settings
 from pwdlib import PasswordHash
 
 password_hash = PasswordHash.recommended()
