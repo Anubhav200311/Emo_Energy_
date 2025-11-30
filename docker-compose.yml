@@ -5,17 +5,20 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
     env_file:
       - .env
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+      - REDIS_URL=redis://redis:6379/0
     ports:
       - "8000:8000"
     restart: unless-stopped
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
 
   db:
-    image: postgres:15-alpine
+    image: postgres:18-alpine
     container_name: emo-energy-db
     restart: unless-stopped
     environment:
@@ -32,5 +35,16 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    container_name: emo-energy-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis-data:/data
+
 volumes:
   db-data:
+  redis-data:
