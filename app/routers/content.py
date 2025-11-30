@@ -5,13 +5,28 @@ from app.models.content import Content
 from app.utils.dependencies import get_current_user
 from sqlalchemy.orm import Session
 from app.database import get_db
+from app.services.ai_service import analyze_text
+import logging
+
+logger = logging.getLogger()
 
 router = APIRouter(prefix="/contents", tags = ["Contents"])
 
 
-def process_content_with_ai():
-    """Method for AI processing of Content"""
-    #todo
+async def process_content_with_ai(content_id: int, text: str, db: Session):
+    """Background task to process content with AI."""
+    try:
+        summary, sentiment = await analyze_text(text)
+        
+        content = db.query(Content).filter(Content.id == content_id).first()
+        if content:
+            content.summary = summary
+            content.sentiment = sentiment
+            db.commit()
+            logger.info(f"Successfully processed content {content_id}")
+    except Exception as e:
+        logger.error(f"Error processing content {content_id}: {str(e)}")
+
 
 @router.post("", response_model=ContentResponse)
 async def create_content(
@@ -61,7 +76,7 @@ async def get_content_by_id(
             detail="Content not found"
         )
     
-    return {"summary": content.summary, "sentiment": content.sentiment}
+    return content
 
 @router.delete("/{content_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_content(
